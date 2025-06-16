@@ -112,7 +112,7 @@ simular_por_p_adulto <- simplify2array(
 colores <- rainbow(length(LAMBDAS)) # Colores para graficar.
 
 # Graficamos la primera curva
-plot(P_ADULTO, simular_por_p_adulto[,1], type = "l", col = colores[1],
+plot(P_ADULTO, simular_por_p_adulto[,1], type = "p", col = colores[1],
      ylim = range(simular_por_p_adulto),
      xlab = "Probabilidad de adulto (P_ADULTO)",
      ylab = "Probabilidad vuelo no óptimo",
@@ -120,7 +120,7 @@ plot(P_ADULTO, simular_por_p_adulto[,1], type = "l", col = colores[1],
 
 # Agregamos las demás al mismo gráfico
 for (i in 2:length(LAMBDAS)) {
-  lines(P_ADULTO, simular_por_p_adulto[, i], col = colores[i])
+  points(P_ADULTO, simular_por_p_adulto[, i], col = colores[i])
 }
 
 # Legenda
