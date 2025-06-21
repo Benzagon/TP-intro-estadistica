@@ -53,7 +53,7 @@ for (i in 1:REPS) {
 }
 
 # Casos favorables sobre casos totales.
-print(suma_de_probas / REPS)
+print(paste("RTA ESCENARIO 1:",suma_de_probas / REPS, sep = " "))
 
 ###########################
 ####### ESCENARIO 2 #######
@@ -73,7 +73,7 @@ for (i in 1:REPS) {
 }
 
 # Casos favorables sobre casos totales.
-print(suma_de_probas / REPS)
+print(paste("RTA ESCENARIO 2:",suma_de_probas / REPS, sep = " "))
 
 ###########################
 ####### ESCENARIO 3 #######
@@ -109,20 +109,15 @@ simular_por_p_adulto <- simplify2array(
   })
 )
 
-colores <- rainbow(length(LAMBDAS)) # Colores para graficar.
+colores <- rainbow(length(LAMBDAS)) # Colores para las curvas
 
-# Graficamos la primera curva
-plot(P_ADULTO, simular_por_p_adulto[,1], type = "p", col = colores[1],
-     ylim = range(simular_por_p_adulto),
-     xlab = "Probabilidad de adulto (P_ADULTO)",
-     ylab = "Probabilidad vuelo no óptimo",
-     main = "Simulación vuelo no óptimo para distintos λ")
+# Graficar todas las columnas de simular_por_p_adulto en una sola llamada
+matplot(P_ADULTO, simular_por_p_adulto, type = "p", col = colores, pch = 16,
+        ylim = range(simular_por_p_adulto),
+        xlab = "Probabilidad de adulto (P_ADULTO)",
+        ylab = "Probabilidad vuelo no óptimo",
+        main = "Simulación vuelo no óptimo para distintos λ")
 
-# Agregamos las demás al mismo gráfico
-for (i in 2:length(LAMBDAS)) {
-  points(P_ADULTO, simular_por_p_adulto[, i], col = colores[i])
-}
-
-# Legenda
+# Agregar leyenda
 legend("topleft", legend = paste("λ =", LAMBDAS),
-       col = colores, lwd = 0.8, cex = 0.7)
+       col = colores, pch = 16, cex = 1)
