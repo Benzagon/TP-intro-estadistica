@@ -10,20 +10,20 @@ peso_general_una_persona <- function(proba_adulto) {
 }
 
 # Simula 1 vuelo con 'pasajeros' y proba de ser adulto. Devuelve verdadero si no es óptimo.
-simular_vuelo_no_optimo_con_pasajeros <- function(pasajeros, p_adulto) {
+simular_vuelo_no_optimo_con_pasajeros <- function(pasajeros, p_adulto, PESO_LIMITE) {
   pesos_pasajeros <- replicate(pasajeros, peso_general_una_persona(p_adulto))
   return(sum(pesos_pasajeros) > PESO_LIMITE)
 }
 
 # Simula 'reps' vuelos por cada 'p_adulto'. 'lambda' determina cuantos pasajeros llegan (mediante una poisson).
-simular_vuelos <- function(reps, p_adulto, lambda) {
+simular_vuelos <- function(reps, p_adulto, lambda, PESO_LIMITE) {
   suma_de_probas <- 0
   for (i in 1:reps) {
     pasajeros <- rpois(1, lambda)
     if (pasajeros > 81) { # Si no entran en el avión.
       pasajeros <- 81
     }
-    suma_de_probas <- (suma_de_probas + 1 * simular_vuelo_no_optimo_con_pasajeros(pasajeros, p_adulto))
+    suma_de_probas <- (suma_de_probas + 1 * simular_vuelo_no_optimo_con_pasajeros(pasajeros, p_adulto, PESO_LIMITE))
   }
   return(suma_de_probas / reps);
 }
@@ -49,6 +49,7 @@ simular_vuelo_no_optimo <- function() {
 
 # Simulamos REPS veces.
 for (i in 1:REPS) {
+  # Sumamos si no es óptimo.
   suma_de_probas <- (suma_de_probas + 1 * simular_vuelo_no_optimo())
 }
 
@@ -69,7 +70,8 @@ set.seed(0)
 
 # Simulamos REPS veces.
 for (i in 1:REPS) {
-  suma_de_probas <- (suma_de_probas + 1 * simular_vuelo_no_optimo_con_pasajeros(81, P_ADULTO)) # Simula 1 vuelo con 81 pasajeros ponderando si son niños.
+  # Simula 1 vuelo con 81 pasajeros ponderando si son niños.
+  suma_de_probas <- (suma_de_probas + 1 * simular_vuelo_no_optimo_con_pasajeros(81, P_ADULTO, PESO_LIMITE))
 }
 
 # Casos favorables sobre casos totales.
@@ -89,7 +91,7 @@ set.seed(0)
 ### INCISO 1 ###
 
 # Simulamos 1000 vuelos por cada P_ADULTO. Lambda está fijo en 70.
-simular_por_p_adulto <- sapply(P_ADULTO, function(p) simular_vuelos(REPS, p, 70))
+simular_por_p_adulto <- sapply(P_ADULTO, function(p) simular_vuelos(REPS, p, 70, PESO_LIMITE))
 
 # Graficar
 plot(P_ADULTO, simular_por_p_adulto, type = "l", 
@@ -105,7 +107,7 @@ LAMBDAS <- seq(70, 100, by = 5) # Secuencia de lambdas.
 # Simulamos 1000 vuelos por cada LAMBDAS y P_ADULTO.
 simular_por_p_adulto <- simplify2array(
   lapply(LAMBDAS, function(l) {
-    sapply(P_ADULTO, function(p) simular_vuelos(REPS, p, l))
+    sapply(P_ADULTO, function(p) simular_vuelos(REPS, p, l, PESO_LIMITE))
   })
 )
 
